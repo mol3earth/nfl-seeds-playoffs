@@ -12,44 +12,11 @@ from bs4 import BeautifulSoup as bs4
 debugMode=True
 baseUrl = 'https://en.m.wikipedia.org/'
 playOffStr = {}
-'''
-SoStm2wiki = {
-    'Atlanta' :
-    'Carolina' :
-    'Washington' :
-    'Chicago' :
-    'Green Bay' :
-    'Minnesota' :
-    'New Orleans' :
-    'NY Giants': 
-    'Philadelphia':
-    'Tampa Bay':
-    'Dallas':
-    'LA Rams':
-    'Oakland':
-    'Miami':
-    'Detroit':
-    'San Francisco':
-    'NY Jets':
-    'Pittsburgh':
-    'Cleveland':
-    'Seattle':
-    'Buffalo':
-    'Houston':
-    'Arizona':
-    'New England':
-    'Tennessee':
-    'Jacksonville':
-    'LA Chargers':
-    'Kansas City':
-    'Denver':
-    'Cincinnati':
-    'Indianapolis':
-    'Baltimore':
-    }
-'''
 
 def getSoS(table):
+    '''
+    Parses Strength of Schedule information for each team.
+    '''
     SoS = {}
     for row in table.find_all('tr')[1:]:
         cols = row.find_all('td')
@@ -67,6 +34,9 @@ def getSoS(table):
     return SoS
 
 def findSoS(SoS,seedStr):
+    '''
+    Combines wikipedia information with SoS information.
+    '''
     SoSlist = {}
     for SoSteam in SoS.keys():
         SoStm = SoSteam.split()
@@ -88,6 +58,9 @@ def findSoS(SoS,seedStr):
     return seedStr, SoSlist
 
 def getTeamInfo(wikiUrl):
+    '''
+    Gets teams record from team-year wikipedia page.
+    '''
     debugMode=False
     if debugMode:
         print('\n   '+ ' scraping: ' + wikiUrl)
@@ -153,6 +126,9 @@ def getSeed(team, seeds):
     return outSeed
 
 def getRoundsByScheduleTable(table, seeds, SoS):
+    '''
+    Scrapes the relevant information from wikipidea post 2007 structure.
+    '''
     if debugMode:
         print(table.prettify())
     games = table.find_all('tr')
@@ -226,6 +202,9 @@ def popStuff(Winner, Loser, winsBySeed, winsBySoS, rnd, roundsBySeed, roundStr, 
     return winsBySoS, winsBySeed, roundsBySeed, roundStr
 
 def Hparse(h4, DateTime, seeds, SoS):
+    '''
+    strips years and round information from the matchup titles.
+    '''
     tempTeams=h4.text
     for string in ['Super','Bowl','XXX', 'XLI', 'XL', 'XI', 'IX', 'VIII', 'VII', 'Edit', '(3OT)', '(2OT)', '(OT)', 'NFC' , 'AFC', 'Championship', ':' ]:
         tempTeams = tempTeams.replace( string , '' )
@@ -259,6 +238,9 @@ def popWinLos(WinTm, LosTm, seeds, SoS):
     return Winner, Loser
 
 def getRoundsByManyDivs(divs, seeds, SoS):
+    '''
+    Scrapes wikipedia pages pre-2007 for the relevant information
+    '''
     winsBySoS, winsBySeed, roundsBySeed, roundStr = initStuff()
     for divID in [3, 4, 5, 6]:
         print(divID)
@@ -281,6 +263,9 @@ def getRoundsByManyDivs(divs, seeds, SoS):
     return winsBySoS, winsBySeed, roundsBySeed, roundStr
 
 def printSoSByYear(playOffStr):
+    '''
+    Will print the Strength of Schedules of each team by year.
+    '''
     tArr={}
     tArr['max']=[]
     tArr['min']=[]
@@ -304,6 +289,9 @@ def printSoSByYear(playOffStr):
                          ]))
 
 def printWinLossAndDiffBySoSandRound(playOffStr):
+    '''
+    Will print the Wins, Losses, and SoS Differential for each round in the playoffs. 
+    '''
     pp='\t'
     print(pp+'     ' + 'Max SoS '+'Min SoS '+'Avg SoS')
     wbSoS={};    lbSoS={};    dbSoS={}    
@@ -352,6 +340,9 @@ def printWinLossAndDiffBySoSandRound(playOffStr):
     ######
 
 def printSoSbySeed(playOffStr):
+    '''
+    Will print the mean Strength of Schedule for each Seed
+    '''
     pp='\t'
     print('     ' + 'Max SoS '+'Min SoS '+'Avg SoS')
     SoSbS=[]
@@ -371,7 +362,7 @@ def printSoSbySeed(playOffStr):
 
 for year in range(2003,2019):
     if year < 2003:
-        print('*'*50 + '\n  CAN NOT GET SoS FOR YEARS < 2003 ')
+        print('*'*50 + '\n  CAN NOT GET Strength of Schedule FOR YEARS < 2003 ')
         print('      UNLESS YOU FIND A BETTER SITE THAN teamrankings.com ')
         quit
     print('DOING '+str(year))
